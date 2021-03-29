@@ -1,0 +1,39 @@
+From 6201a68d85ff313792c219085367900d7e59be1c Mon Sep 17 00:00:00 2001
+From: Jason Furmanek <furmanek@us.ibm.com>
+Date: Mon, 29 Mar 2021 13:35:46 -0500
+Subject: [PATCH] make configure linux multi-arch
+
+---
+ configure.py | 8 +++++---
+ 1 file changed, 5 insertions(+), 3 deletions(-)
+
+diff --git a/configure.py b/configure.py
+index 4772a55..4da84ad 100644
+--- a/configure.py
++++ b/configure.py
+@@ -44,9 +44,11 @@ def is_windows():
+     return platform.system() == "Windows"
+ 
+ 
+-def is_linux():
+-    return platform.system() == "Linux"
++def is_linux_x86_64():
++    return ((platform.system() == "Linux") & (platform.machine() == "x86_64"))
+ 
++def is_linux_ppc64le():
++    return ((platform.system() == "Linux") & (platform.machine() == "ppc64le"))
+ 
+ def is_raspi_arm():
+     return os.uname()[4] == "armv7l"
+@@ -118,7 +120,7 @@ def create_build_configuration():
+         write("build:windows --host_copt=/experimental:preprocessor")
+         write("build:windows --copt=/arch=AVX")
+ 
+-    if is_macos() or is_linux():
++    if is_macos() or is_linux_x86_64():
+         write("build --copt=-mavx")
+ 
+     if os.getenv("TF_NEED_CUDA", "0") == "1":
+-- 
+1.8.3.1
+
